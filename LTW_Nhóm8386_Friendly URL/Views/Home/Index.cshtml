@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Friendly URL Shortener";
+}
+
+<h2>Friendly URL Shortener</h2>
+<form id="urlShortenerForm">
+    <input type="text" id="urlInput" placeholder="Nhập URL cần rút gọn" required />
+    <button type="submit">Rút gọn</button>
+</form>
+
+<p id="shortenedUrl"></p>
+
+<script>
+    document.getElementById("urlShortenerForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var url = document.getElementById("urlInput").value;
+
+        fetch("/UrlShortener/Shorten", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "url=" + encodeURIComponent(url)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("shortenedUrl").innerHTML = `<a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
