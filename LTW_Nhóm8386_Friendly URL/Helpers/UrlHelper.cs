@@ -7,25 +7,23 @@ namespace LTW_Nhóm8386_FriendlyURL.Helpers
 {
     public static class UrlHelper
     {
-        public static string GenerateFriendlyUrl(string url)
+        // Hàm chuyển đổi chuỗi thành dạng slug chuẩn: chữ thường, không dấu, dấu gạch ngang thay cho khoảng trắng/ ký tự đặc biệt.
+        public static string GenerateFriendlyText(string url)
         {
-            if (string.IsNullOrWhiteSpace(url))
-                return string.Empty;
-
-            // Phân tích URL và lấy phần đường dẫn
+            // Ví dụ: lấy phần đường dẫn từ URL
             Uri uri = new Uri(url);
             string path = uri.AbsolutePath;
 
-            // Chuyển đổi tiếng Việt có dấu thành không dấu
+            // Loại bỏ dấu tiếng Việt
             string normalized = RemoveDiacritics(path);
 
-            // Loại bỏ ký tự đặc biệt: chỉ giữ lại chữ cái, số, dấu gạch ngang và dấu '/'
-            string friendlyPath = Regex.Replace(normalized, @"[^a-zA-Z0-9/-]", "-").ToLower();
+            // Thay các ký tự không hợp lệ bằng dấu gạch ngang
+            string friendly = Regex.Replace(normalized, @"[^a-zA-Z0-9]+", "-").ToLower();
 
-            // Chuẩn hóa dấu gạch ngang liên tiếp
-            friendlyPath = Regex.Replace(friendlyPath, @"-+", "-").Trim('-');
+            // Loại bỏ dấu gạch ngang thừa ở đầu/cuối
+            friendly = friendly.Trim('-');
 
-            return $"{uri.Scheme}://{uri.Host}/{friendlyPath}";
+            return friendly;
         }
 
         private static string RemoveDiacritics(string text)
@@ -35,9 +33,7 @@ namespace LTW_Nhóm8386_FriendlyURL.Helpers
             foreach (char c in text)
             {
                 if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-                {
                     sb.Append(c);
-                }
             }
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }

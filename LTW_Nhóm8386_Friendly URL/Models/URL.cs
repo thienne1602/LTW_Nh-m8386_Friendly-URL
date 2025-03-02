@@ -13,7 +13,7 @@ namespace LTW_Nhóm8386_FriendlyURL.Models
 
         [Required]
         [Display(Name = "Friendly URL")]
-        public string FriendlyUrl { get; set; } = string.Empty;
+        public string FriendlyUrl { get; set; } = string.Empty; // Lưu slug
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

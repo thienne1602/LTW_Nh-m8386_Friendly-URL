@@ -21,10 +21,26 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+
+            // Hàm tải danh sách URL từ server
+            function loadSavedUrls() {
+                $.get("/URLs/GetSavedUrls", function (data) {
+                    $("#urlList").empty();
+                    data.forEach(function(item) {
+                        $("#urlList").append(`
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="${item.friendlyUrl}" target="_blank">${item.friendlyUrl}</a>
+                                <button class="btn btn-danger btn-sm delete-btn" data-id="${item.id}">Xóa</button>
+                            </li>
+                        `);
+                    });
+                });
+            }
+
+            // Gửi yêu cầu chuyển đổi URL
             $("#urlForm").submit(function (e) {
                 e.preventDefault();
-                let url = $("#inputUrl").val();
-
+                var url = $("#inputUrl").val();
                 $.post("/URLs/GenerateFriendlyUrl", { url: url }, function (data) {
                     $("#result").html(`<strong>Friendly URL:</strong> <a href="${data.friendlyUrl}" target="_blank">${data.friendlyUrl}</a>`);
                     loadSavedUrls();
@@ -33,15 +49,23 @@
                 });
             });
 
-            function loadSavedUrls() {
-                $.get("/URLs/GetSavedUrls", function (data) {
-                    $("#urlList").empty();
-                    data.forEach(item => {
-                        $("#urlList").append(`<li class="list-group-item"><a href="${item.friendlyUrl}" target="_blank">${item.friendlyUrl}</a></li>`);
+            // Sự kiện click nút xóa URL
+            $(document).on("click", ".delete-btn", function () {
+                var id = $(this).data("id");
+                if (confirm("Bạn có chắc chắn muốn xóa URL này không?")) {
+                    $.post("/URLs/DeleteUrl", { id: id }, function (data) {
+                        if (data.success) {
+                            loadSavedUrls();
+                        } else {
+                            alert("Xóa URL không thành công: " + data.message);
+                        }
+                    }).fail(function () {
+                        alert("Có lỗi xảy ra khi xóa URL.");
                     });
-                });
-            }
+                }
+            });
 
+            // Tải danh sách URL ngay khi trang được tải
             loadSavedUrls();
         });
     </script>

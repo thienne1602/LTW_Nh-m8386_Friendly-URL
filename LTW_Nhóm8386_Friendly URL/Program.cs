@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Thêm dịch vụ Controller và Views
 builder.Services.AddControllersWithViews();
 
-// Cấu hình kết nối đến SQL Server
+// Cấu hình kết nối đến SQL Server (đã thêm TrustServerCertificate nếu cần)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
