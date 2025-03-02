@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Chuyển đổi URL";
+}
+
+<div class="container mt-5">
+    <h2>Chuyển đổi URL thành Friendly URL</h2>
+    <form id="urlForm" class="mt-3">
+        <div class="mb-3">
+            <input type="text" id="inputUrl" class="form-control" placeholder="Nhập URL tại đây..." required>
+        </div>
+        <button type="submit" class="btn btn-primary">Chuyển đổi</button>
+    </form>
+    <div id="result" class="mt-3"></div>
+
+    <h3 class="mt-4">Danh sách Friendly URL đã lưu:</h3>
+    <ul id="urlList" class="list-group"></ul>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#urlForm").submit(function (e) {
+                e.preventDefault();
+                let url = $("#inputUrl").val();
+
+                $.post("/URLs/GenerateFriendlyUrl", { url: url }, function (data) {
+                    $("#result").html(`<strong>Friendly URL:</strong> <a href="${data.friendlyUrl}" target="_blank">${data.friendlyUrl}</a>`);
+                    loadSavedUrls();
+                }).fail(function (xhr) {
+                    alert(xhr.responseText);
+                });
+            });
+
+            function loadSavedUrls() {
+                $.get("/URLs/GetSavedUrls", function (data) {
+                    $("#urlList").empty();
+                    data.forEach(item => {
+                        $("#urlList").append(`<li class="list-group-item"><a href="${item.friendlyUrl}" target="_blank">${item.friendlyUrl}</a></li>`);
+                    });
+                });
+            }
+
+            loadSavedUrls();
+        });
+    </script>
+}

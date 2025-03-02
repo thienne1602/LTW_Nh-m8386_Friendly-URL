@@ -1,36 +1,34 @@
-﻿using LTW_Nhóm8386_FriendlyURL.Models;
-using LTW_Nhóm8386_FriendlyURL.Services;
+﻿using LTW_Nhóm8386_FriendlyURL.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cấu hình Database
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Đăng ký dịch vụ
-builder.Services.AddScoped<UrlShortenerService>();
-
-// Thêm MVC
+// Thêm dịch vụ Controller và Views
 builder.Services.AddControllersWithViews();
-builder.Services.AddLogging();
-builder.Services.AddScoped<UrlShortenerService>();
+
+// Cấu hình kết nối đến SQL Server
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-// Cấu hình pipeline middleware
+// Cấu hình middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseAuthorization();
 
-// Cấu hình route mặc định
+// Cấu hình routing mặc định: Controller=URLs, Action=Index
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=URLs}/{action=Index}/{id?}");
 
 app.Run();
