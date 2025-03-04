@@ -15,6 +15,8 @@ namespace LTW_Nhóm8386_FriendlyURL.Models
         [Display(Name = "Friendly URL")]
         public string FriendlyUrl { get; set; } = string.Empty; // Lưu slug
 
+        public string WebsiteName { get; set; } = string.Empty; // Thêm thuộc tính này
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

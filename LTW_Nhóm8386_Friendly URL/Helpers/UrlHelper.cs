@@ -7,23 +7,43 @@ namespace LTW_Nhóm8386_FriendlyURL.Helpers
 {
     public static class UrlHelper
     {
-        // Hàm chuyển đổi chuỗi thành dạng slug chuẩn: chữ thường, không dấu, dấu gạch ngang thay cho khoảng trắng/ ký tự đặc biệt.
-        public static string GenerateFriendlyText(string url)
+        // Chuẩn hóa URL hợp lệ
+        public static string NormalizeUrl(string url)
         {
-            // Ví dụ: lấy phần đường dẫn từ URL
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                throw new ArgumentException("URL không hợp lệ!");
+            }
+
+            // Kiểm tra xem URL có http/https không
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+            {
+                url = "https://" + url;
+            }
+
+            // Kiểm tra tính hợp lệ của URL
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
+            {
+                throw new ArgumentException("URL không hợp lệ!");
+            }
+
+            return uri.ToString();
+        }
+
+        // Chuyển đổi toàn bộ URL thành Friendly Slug
+        public static string GenerateFriendlySlug(string url)
+        {
             Uri uri = new Uri(url);
-            string path = uri.AbsolutePath;
+            string fullPath = $"{uri.Host}{uri.AbsolutePath}".Trim('/');
 
-            // Loại bỏ dấu tiếng Việt
-            string normalized = RemoveDiacritics(path);
+            if (string.IsNullOrEmpty(fullPath))
+            {
+                fullPath = "trang-chu"; // Nếu trống, đặt mặc định là "trang-chu"
+            }
 
-            // Thay các ký tự không hợp lệ bằng dấu gạch ngang
-            string friendly = Regex.Replace(normalized, @"[^a-zA-Z0-9]+", "-").ToLower();
-
-            // Loại bỏ dấu gạch ngang thừa ở đầu/cuối
-            friendly = friendly.Trim('-');
-
-            return friendly;
+            string normalized = RemoveDiacritics(fullPath);
+            string friendly = Regex.Replace(normalized, "[^a-zA-Z0-9]+", "-").ToLower();
+            return friendly.Trim('-');
         }
 
         private static string RemoveDiacritics(string text)

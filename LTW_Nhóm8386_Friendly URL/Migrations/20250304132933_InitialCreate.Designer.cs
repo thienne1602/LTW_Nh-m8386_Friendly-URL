@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LTW_Nhóm8386_Friendly_URL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250302062543_InitialCreate")]
+    [Migration("20250304132933_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -41,6 +41,10 @@ namespace LTW_Nhóm8386_Friendly_URL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OriginalUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WebsiteName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

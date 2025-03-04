@@ -31,4 +31,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=URLs}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "friendlyRedirect",
+    pattern: "redirect/{slug}",
+    defaults: new { controller = "URLs", action = "RedirectToOriginal" });
+
 app.Run();

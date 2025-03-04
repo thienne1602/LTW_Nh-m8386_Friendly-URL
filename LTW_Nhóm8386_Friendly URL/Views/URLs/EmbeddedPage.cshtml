@@ -1,0 +1,12 @@
+﻿@model LTW_Nhóm8386_FriendlyURL.Models.URL
+@{
+    ViewData["Title"] = "Đang tải trang...";
+    string url = Model.OriginalUrl;
+}
+
+<h2>Trang: <a href="@url" target="_blank">@url</a></h2>
+
+<!-- Hiển thị trang gốc bên trong iframe -->
+<iframe src="@url" style="width: 100%; height: 800px; border: none;"></iframe>
+
+<p>Nếu trang không hiển thị, hãy <a href="@url" target="_blank">nhấn vào đây</a> để mở trong tab mới.</p>

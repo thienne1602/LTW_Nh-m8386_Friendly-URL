@@ -19,6 +19,7 @@ namespace LTW_Nhóm8386_Friendly_URL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OriginalUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FriendlyUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WebsiteName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
